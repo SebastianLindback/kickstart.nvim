@@ -67,7 +67,6 @@ vim.g.loaded_netrwPlugin = 1
 
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
-
 -- NOTE: Here is where you install your plugins.
 --  You can configure plugins using the `config` key.
 --
@@ -153,10 +152,26 @@ require('lazy').setup({
 
   {
     -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    'Mofiqul/vscode.nvim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      require('vscode').setup({
+    -- Alternatively set style in setup
+    -- style = 'light'
+
+
+    -- Enable italic comment
+    italic_comments = true,
+
+    -- Disable nvim-tree background color
+    disable_nvimtree_bg = true,
+
+    -- Override colors (see ./lua/vscode/colors.lua)
+    color_overrides = {
+        vscLineNumber = '#FFFFFF',
+    },
+})
+      require('vscode').load()
     end,
   },
 
@@ -168,7 +183,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'vscode',
         component_separators = '|',
         section_separators = '',
       },
@@ -239,7 +254,7 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
-vim.o.hlsearch = true
+-- vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -257,7 +272,6 @@ vim.o.breakindent = true
 
 -- Save undo history
 vim.o.undofile = true
-
 -- Case-insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -274,9 +288,18 @@ vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
-
+vim.o.scrolloff= 20
+vim.o.relativenumber = true
+vim.o.tabstop = 2
+vim.o.expandtab = true
+vim.o.showmatch = true
+vim.o.incsearch = true
+vim.o.cursorline = true
+vim.o.title = true
+vim.o.termguicolors = true
 -- [[ Basic Keymaps ]]
 
+vim.keymap.set('i', 'jk', '<Esc>')
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
