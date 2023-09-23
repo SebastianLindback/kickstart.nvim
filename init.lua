@@ -158,7 +158,7 @@ require('lazy').setup({
       require('vscode').setup({
     -- Alternatively set style in setup
     -- style = 'light'
-
+    transparent = true,
 
     -- Enable italic comment
     italic_comments = true,
