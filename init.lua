@@ -299,6 +299,25 @@ vim.o.title = true
 vim.o.termguicolors = true
 -- [[ Basic Keymaps ]]
 
+vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
+
+
+
+
+-- Bindings for tab actions
+vim.keymap.set('n', '<leader>tn', ':tabnew<CR>', { noremap = true, silent = true, desc = '[t] New tab' })
+vim.keymap.set('n', '<leader>tc', ':tabclose<CR>', { noremap = true, silent = true, desc = '[t] Close tab' })
+vim.keymap.set('n', '<leader>tn', ':tabnext<CR>', { noremap = true, silent = true, desc = '[t] Next tab' })
+vim.keymap.set('n', '<leader>tp', ':tabprevious<CR>', { noremap = true, silent = true, desc = '[t] Previous tab' })
+
+-- Bindings for buffer actions
+vim.keymap.set('n', '<leader>bn', ':bnext<CR>', { noremap = true, silent = true, desc = '[b] Next buffer' })
+vim.keymap.set('n', '<leader>bp', ':bprevious<CR>', { noremap = true, silent = true, desc = '[b] Previous buffer' })
+vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', { noremap = true, silent = true, desc = '[b] Delete buffer' })
+
 vim.keymap.set('i', 'jk', '<Esc>')
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -593,6 +612,8 @@ vim.keymap.set('', 'T', function()
   hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false, hint_offset = 1 })
 end, {remap=true})
 -- END CONFIG HOP.nvim
+
+
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
