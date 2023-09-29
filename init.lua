@@ -512,6 +512,7 @@ local servers = {
   cssmodules_ls = {},
   eslint = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
+  omnisharp = {},
 
   lua_ls = {
     Lua = {
