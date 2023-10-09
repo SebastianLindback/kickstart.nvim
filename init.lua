@@ -60,7 +60,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 
-
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -80,7 +79,7 @@ require('lazy').setup({
   'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  -- 'tpope/vim-sleuth',
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -150,31 +149,87 @@ require('lazy').setup({
     },
   },
 
+  -- {
+  --   -- Theme inspired by Atom
+  --   'Mofiqul/vscode.nvim',
+  --   priority = 1000,
+  --   config = function()
+  --     require('vscode').setup({
+  --       -- Alternatively set style in setup
+  --       -- style = 'light'
+  --       transparent = true,
+  --
+  --       -- Enable italic comment
+  --       italic_comments = true,
+  --
+  --       -- Disable nvim-tree background color
+  --       disable_nvimtree_bg = true,
+  --
+  --       -- Override colors (see ./lua/vscode/colors.lua)
+  --       color_overrides = {
+  --         vscLineNumber = '#FFFFFF',
+  --       },
+  --     })
+  --     require('vscode').load()
+  --   end,
+  -- },
   {
-    -- Theme inspired by Atom
-    'Mofiqul/vscode.nvim',
+    "catppuccin/nvim",
+    name = "catppuccin",
     priority = 1000,
     config = function()
-      require('vscode').setup({
-    -- Alternatively set style in setup
-    -- style = 'light'
-    transparent = true,
-
-    -- Enable italic comment
-    italic_comments = true,
-
-    -- Disable nvim-tree background color
-    disable_nvimtree_bg = true,
-
-    -- Override colors (see ./lua/vscode/colors.lua)
-    color_overrides = {
-        vscLineNumber = '#FFFFFF',
-    },
-})
-      require('vscode').load()
-    end,
+      require("catppuccin").setup({
+        flavour = "mocha", -- latte, frappe, macchiato, mocha
+        background = { -- :h background
+          light = "latte",
+          dark = "mocha",
+        },
+        transparent_background = true, -- disables setting the background color.
+        show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+        term_colors = false,        -- sets terminal colors (e.g. `g:terminal_color_0`)
+        dim_inactive = {
+          enabled = false,          -- dims the background color of inactive window
+          shade = "dark",
+          percentage = 0.15,        -- percentage of the shade to apply to the inactive window
+        },
+        no_italic = false,          -- Force no italic
+        no_bold = false,            -- Force no bold
+        no_underline = false,       -- Force no underline
+        styles = {                  -- Handles the styles of general hi groups (see `:h highlight-args`):
+          comments = { "italic" },  -- Change the style of comments
+          conditionals = { "italic" },
+          loops = {},
+          functions = {},
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
+        },
+        color_overrides = {},
+        custom_highlights = {},
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          notify = false,
+          mini = false,
+          hop = true,
+indent_blankline = {
+    enabled = true,
+    scope_color = "", -- catppuccin color (eg. `lavender`) Default: text
+    colored_indent_levels = false,
+},
+          -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+        },
+      })
+      vim.cmd.colorscheme"catppuccin"
+    end
   },
-
 
   {
     -- Set lualine as statusline
@@ -183,7 +238,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'vscode',
+        theme = 'catppuccin',
         component_separators = '|',
         section_separators = '',
       },
@@ -193,12 +248,40 @@ require('lazy').setup({
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
+    dependencies = { "HiPhish/rainbow-delimiters.nvim" },
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
+
+    config = function()
+      local highlight = {
+        "RainbowRed",
+        "RainbowYellow",
+        "RainbowBlue",
+        "RainbowOrange",
+        "RainbowGreen",
+        "RainbowViolet",
+        "RainbowCyan",
+      }
+      local hooks = require "ibl.hooks"
+      -- create the highlight groups in the highlight setup hook, so they are reset
+      -- every time the colorscheme changes
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+      end)
+
+      vim.g.rainbow_delimiters = { highlight = highlight }
+      require("ibl").setup {
+        scope = { highlight = highlight, show_start = true }
+      }
+
+      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+    end
   },
 
   -- "gc" to comment visual regions/lines
@@ -246,7 +329,7 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]
@@ -288,15 +371,18 @@ vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
-vim.o.scrolloff= 20
+vim.o.scrolloff = 20
 vim.o.relativenumber = true
 vim.o.tabstop = 2
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.shiftwidth = 2
+vim.o.softtabstop = ""
 vim.o.expandtab = true
 vim.o.showmatch = true
 vim.o.incsearch = true
 vim.o.cursorline = true
 vim.o.title = true
-vim.o.termguicolors = true
 -- [[ Basic Keymaps ]]
 
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
@@ -360,7 +446,7 @@ pcall(require('telescope').load_extension, 'fzf')
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
+ -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
     winblend = 10,
     previewer = false,
@@ -379,10 +465,11 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = {'lua', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'html', 'json', 'c_sharp', 'regex', 'css', 'jsdoc' },
+  ensure_installed = { 'lua', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'html', 'json', 'c_sharp', 'regex',
+    'css', 'jsdoc' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-  auto_install = true,
+  auto_install = false,
 
   highlight = { enable = true },
   indent = { enable = true },
@@ -512,7 +599,7 @@ local servers = {
   cssmodules_ls = {},
   eslint = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
-  omnisharp = {},
+  csharp_ls = {},
 
   lua_ls = {
     Lua = {
@@ -602,16 +689,16 @@ local hop = require('hop')
 local directions = require('hop.hint').HintDirection
 vim.keymap.set('', 'f', function()
   hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false })
-end, {remap=true})
+end, { remap = true })
 vim.keymap.set('', 'F', function()
   hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false })
-end, {remap=true})
+end, { remap = true })
 vim.keymap.set('', 't', function()
   hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false, hint_offset = -1 })
-end, {remap=true})
+end, { remap = true })
 vim.keymap.set('', 'T', function()
   hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false, hint_offset = 1 })
-end, {remap=true})
+end, { remap = true })
 -- END CONFIG HOP.nvim
 
 
