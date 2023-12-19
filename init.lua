@@ -42,7 +42,10 @@ P.S. You can delete this when you're done too. It's your config now :)
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.g.python3_host_prog = "C:/Users/SebastianLindbäck/AppData/Local/Programs/Python/Python39/python.EXE"
 
+-- Set encoding to UTF-8
+vim.cmd('set encoding=utf-8')
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -174,60 +177,11 @@ require('lazy').setup({
   --   end,
   -- },
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    "phha/zenburn.nvim",
+    name = "zenburn",
     priority = 1000,
     config = function()
-      require("catppuccin").setup({
-        flavour = "mocha", -- latte, frappe, macchiato, mocha
-        background = { -- :h background
-          light = "latte",
-          dark = "mocha",
-        },
-        transparent_background = true, -- disables setting the background color.
-        show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-        term_colors = false,        -- sets terminal colors (e.g. `g:terminal_color_0`)
-        dim_inactive = {
-          enabled = false,          -- dims the background color of inactive window
-          shade = "dark",
-          percentage = 0.15,        -- percentage of the shade to apply to the inactive window
-        },
-        no_italic = false,          -- Force no italic
-        no_bold = false,            -- Force no bold
-        no_underline = false,       -- Force no underline
-        styles = {                  -- Handles the styles of general hi groups (see `:h highlight-args`):
-          comments = { "italic" },  -- Change the style of comments
-          conditionals = { "italic" },
-          loops = {},
-          functions = {},
-          keywords = {},
-          strings = {},
-          variables = {},
-          numbers = {},
-          booleans = {},
-          properties = {},
-          types = {},
-          operators = {},
-        },
-        color_overrides = {},
-        custom_highlights = {},
-        integrations = {
-          cmp = true,
-          gitsigns = true,
-          nvimtree = true,
-          treesitter = true,
-          notify = false,
-          mini = false,
-          hop = true,
-indent_blankline = {
-    enabled = true,
-    scope_color = "", -- catppuccin color (eg. `lavender`) Default: text
-    colored_indent_levels = false,
-},
-          -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
-        },
-      })
-      vim.cmd.colorscheme"catppuccin"
+      vim.cmd.colorscheme"zenburn"
     end
   },
 
@@ -238,7 +192,7 @@ indent_blankline = {
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'catppuccin',
+        theme = 'zenburn',
         component_separators = '|',
         section_separators = '',
       },
