@@ -1,5 +1,5 @@
 return {
-  "kyazdani42/nvim-tree.lua", -- Använd rätt namn på plugin-repo här
+  "kyazdani42/nvim-tree.lua",
   config = function()
     require("nvim-tree").setup {
       on_attach = "default",
@@ -23,12 +23,12 @@ return {
         centralize_selection = false,
         cursorline = true,
         debounce_delay = 15,
-        side = "right",
+        side = "left",
         preserve_window_proportions = false,
         number = false,
         relativenumber = false,
         signcolumn = "yes",
-        width = 30,
+        width = 45,
         float = {
           enable = false,
           quit_on_focus_loss = true,
