@@ -20,13 +20,10 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- set termguicolors to enable highlight groups
-vim.opt.termguicolors = true
 -- NOTE: Here is where you install your plugins.
 --  You can configure plugins using the `config` key.
 --
@@ -96,25 +93,25 @@ require('lazy').setup({
     },
   },
 
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    main = 'ibl',
-    -- dependencies = { "HiPhish/rainbow-delimiters.nvim" },
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
+  -- {
+  -- Add indentation guides even on blank lines
+  -- 'lukas-reineke/indent-blankline.nvim',
+  -- main = 'ibl',
+  -- dependencies = { "HiPhish/rainbow-delimiters.nvim" },
+  -- Enable `lukas-reineke/indent-blankline.nvim`
+  -- See `:help indent_blankline.txt`
 
-    config = function()
-      require('ibl').setup {
-        indent = {
-          char = "▏", -- This is a slightly thinner char than the default one, check :help ibl.config.indent.char
-        },
-      }
-      local hooks = require("ibl.hooks")
-      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
-      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_tab_indent_level)
-    end,
-  },
+  -- config = function()
+  --   require('ibl').setup {
+  --     indent = {
+  --       char = "▏", -- This is a slightly thinner char than the default one, check :help ibl.config.indent.char
+  --     },
+  --   }
+  -- local hooks = require("ibl.hooks")
+  -- hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
+  -- hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_tab_indent_level)
+  --   end,
+  -- },
 
 
 
@@ -173,6 +170,7 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
+
 vim.o.termguicolors = true
 vim.o.scrolloff = 20
 vim.o.relativenumber = true
@@ -202,7 +200,6 @@ vim.opt.fillchars = { eob = " " }
 
 
 
-vim.keymap.set('n', '<leader>db', ':bd<enter>')
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
@@ -259,74 +256,6 @@ vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]resume' })
 
--- [[ Configure Treesitter ]]
--- See `:help nvim-treesitter`
-require('nvim-treesitter.configs').setup {
-  -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'lua', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'html', 'json', 'c_sharp', 'regex',
-    'css', 'jsdoc' },
-
-  -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-  auto_install = false,
-
-  highlight = { enable = true },
-  indent = { enable = true },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = '<c-space>',
-      node_incremental = '<c-space>',
-      scope_incremental = '<c-s>',
-      node_decremental = '<M-space>',
-    },
-  },
-  textobjects = {
-    select = {
-      enable = true,
-      lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ['aa'] = '@parameter.outer',
-        ['ab'] = '@block.outer',
-        ['ia'] = '@parameter.inner',
-        ['af'] = '@function.outer',
-        ['if'] = '@function.inner',
-        ['ac'] = '@class.outer',
-        ['ic'] = '@class.inner',
-        ['ib'] = '@block.inner'
-      },
-    },
-    move = {
-      enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
-      goto_next_start = {
-        [']m'] = '@function.outer',
-        [']]'] = '@block.outer',
-      },
-      goto_next_end = {
-        [']M'] = '@function.outer',
-        [']['] = '@block.outer',
-      },
-      goto_previous_start = {
-        ['[m'] = '@function.outer',
-        ['[['] = '@block.outer',
-      },
-      goto_previous_end = {
-        ['[M'] = '@function.outer',
-        ['[]'] = '@block.outer',
-      },
-    },
-    swap = {
-      enable = true,
-      swap_next = {
-        ['<leader>a'] = '@parameter.inner',
-      },
-      swap_previous = {
-        ['<leader>A'] = '@parameter.inner',
-      },
-    },
-  },
-}
 -- greatest remap ever
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
@@ -363,6 +292,10 @@ local on_attach = function(_, bufnr)
   nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
+  -- Jump to diagnostic
+  nmap('<leader>dn', vim.diagnostic.goto_next, "Jump to the next diagnostic")
+  nmap('<leader>dp', vim.diagnostic.goto_prev, "Jump to the previous diagnostic")
+
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
@@ -394,12 +327,17 @@ local servers = {
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
-  tsserver = {},
+  -- tsserver = {},
   cssls = {},
   cssmodules_ls = {},
   eslint = {},
-  html = { filetypes = { 'html', 'twig', 'hbs' } },
-  omnisharp = {},
+  html = {},
+  omnisharp = {
+    enable_roslyn_analyzers = true,
+    organize_imports_on_format = true,
+    enable_import_completion = true,
+  },
+  -- netcoredbg = {},
 
   lua_ls = {
     Lua = {
@@ -430,68 +368,49 @@ mason_lspconfig.setup_handlers {
       on_attach = on_attach,
       settings = servers[server_name],
       filetypes = (servers[server_name] or {}).filetypes,
+
     }
-  end
+  end,
+
+
+
+
 }
 
--- [[ Configure nvim-cmp ]]
--- See `:help cmp`
-local cmp = require 'cmp'
-local luasnip = require 'luasnip'
-require('luasnip.loaders.from_vscode').lazy_load()
-luasnip.config.setup {}
 
-cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert {
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete {},
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
+local handlers = {
+  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+    silent = true,
+    focusable = false
+  }),
+}
+
+require("typescript-tools").setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
+  handlers = handlers,
+
+  settings = {
+    separate_diagnostic_server = true,
+    tsserver_file_preferences = {
+      includeInlayParameterNameHints = "all",
+      includeCompletionsForModuleExports = true,
+      quotePreference = "auto",
     },
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
   },
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  },
-}
+})
 
 
--- [[ Configure Trouble]]
-vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end, { desc = "[Trouble] Toggle" })
-vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end,
+-- [[ Configure Trouble]
+vim.keymap.set("n", "<leader>t", function() require("trouble").toggle() end, { desc = "[Trouble] Toggle" })
+vim.keymap.set("n", "<leader>Tw", function() require("trouble").toggle("workspace_diagnostics") end,
   { desc = "[Trouble] Workspace diagnostics" })
-vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end,
+vim.keymap.set("n", "<leader>Td", function() require("trouble").toggle("document_diagnostics") end,
   { desc = "[Trouble] Document diagnostics" })
-vim.keymap.set("n", "<leader>xq", function() require("trouble").toggle("quickfix") end, { desc = "[Trouble] Quickfix" })
-vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist") end, { desc = "[Trouble] Loclist" })
-vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end, { desc = "[Trouble] LSP references" })
+vim.keymap.set("n", "<leader>Tq", function() require("trouble").toggle("quickfix") end, { desc = "[Trouble] Quickfix" })
+vim.keymap.set("n", "<leader>Tl", function() require("trouble").toggle("loclist") end, { desc = "[Trouble] Loclist" })
+vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end,
+  { desc = "[Trouble] LSP references" })
 
 
 

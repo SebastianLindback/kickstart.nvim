@@ -1,0 +1,27 @@
+return {
+    -- "pmizio/typescript-tools.nvim",
+    -- dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    -- config = function()
+    --     local handlers = {
+    --         ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+    --             silent = true,
+    --             focusable = false
+    --         }),
+    --     }
+    --
+    --     require("typescript-tools").setup({
+    --         on_attach = function(client, bufnr)
+    --             vim.lsp.inlay_hint(bufnr, true)
+    --         end,
+    --         handlers = handlers,
+    --         settings = {
+    --             separate_diagnostic_server = true,
+    --             tsserver_file_preferences = {
+    --                 includeInlayParameterNameHints = "all",
+    --                 includeCompletionsForModuleExports = true,
+    --                 quotePreference = "auto",
+    --             },
+    --         },
+    --     })
+    -- end
+}

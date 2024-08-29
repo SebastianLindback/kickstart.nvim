@@ -1,8 +1,64 @@
 return {
   "kyazdani42/nvim-tree.lua",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    {
+      "JMarkin/nvim-tree.lua-float-preview",
+      lazy = true,
+      config = function()
+        local HEIGHT_RATIO = 0.8 -- You can change this
+        local WIDTH_RATIO = 0.4  -- You can change this too
+        require('float-preview').setup({
+          window = {
+            wrap = false,
+            trim_height = false,
+            open_win_config = function()
+              local screen_w = vim.opt.columns:get()
+              local screen_h = vim.opt.lines:get() - vim.opt.cmdheight:get()
+              local window_w = screen_w * WIDTH_RATIO
+              local window_h = screen_h * HEIGHT_RATIO
+              local window_w_int = math.floor(window_w)
+              local window_h_int = math.floor(window_h)
+              local center_x = (screen_w / 2) + (window_w_int / 50)
+              local center_y = ((vim.opt.lines:get() - window_h) / 2)
+                  - vim.opt.cmdheight:get()
+              return {
+                style = "minimal",
+                relative = "editor",
+                border = "single",
+                row = center_y,
+                col = center_x,
+                width = window_w_int,
+                height = window_h_int,
+              }
+            end
+          }
+        })
+      end
+    }
+  },
   config = function()
+    local HEIGHT_RATIO = 0.8 -- You can change this
+    local WIDTH_RATIO = 0.4  -- You can change this too
+    local function my_on_attach(bufnr)
+      local api = require('nvim-tree.api')
+
+
+      api.config.mappings.default_on_attach(bufnr)
+
+
+      local FloatPreview = require("float-preview")
+      FloatPreview.attach_nvimtree(bufnr)
+    end
+
+    -- custom keymaps
+    local function opts(desc)
+      return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    end
+    vim.keymap.set('n', '<leader>f', require('nvim-tree.api').tree.toggle, opts("toggle"))
+
     require("nvim-tree").setup {
-      on_attach = "default",
+      on_attach = my_on_attach,
       hijack_cursor = false,
       auto_reload_on_write = true,
       disable_netrw = false,
@@ -20,27 +76,33 @@ return {
         files_first = false,
       },
       view = {
-        centralize_selection = false,
-        cursorline = true,
-        debounce_delay = 15,
-        side = "left",
-        preserve_window_proportions = false,
-        number = false,
-        relativenumber = false,
-        signcolumn = "yes",
-        width = 45,
+        relativenumber = true,
         float = {
-          enable = false,
-          quit_on_focus_loss = true,
-          open_win_config = {
-            relative = "editor",
-            border = "rounded",
-            width = 30,
-            height = 30,
-            row = 1,
-            col = 1,
-          },
+          quit_on_focus_loss = false,
+          enable = true,
+          open_win_config = function()
+            local screen_w = vim.opt.columns:get()
+            local screen_h = vim.opt.lines:get() - vim.opt.cmdheight:get()
+            local window_w = screen_w * WIDTH_RATIO
+            local window_h = screen_h * HEIGHT_RATIO
+            local window_w_int = math.floor(window_w)
+            local window_h_int = math.floor(window_h)
+            local center_x = (screen_w / 2) - (window_w_int + (window_w_int / 50))
+            local center_y = ((vim.opt.lines:get() - window_h) / 2)
+                - vim.opt.cmdheight:get()
+            return {
+              border = "rounded",
+              relative = "editor",
+              row = center_y,
+              col = center_x,
+              width = window_w_int,
+              height = window_h_int,
+            }
+          end,
         },
+        width = function()
+          return math.floor(vim.opt.columns:get() * WIDTH_RATIO)
+        end,
       },
       renderer = {
         add_trailing = false,
@@ -251,4 +313,3 @@ return {
     }
   end,
 }
-
